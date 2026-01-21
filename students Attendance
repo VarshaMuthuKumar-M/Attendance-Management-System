@@ -1,0 +1,95 @@
+from datetime import datetime
+
+class Student:
+    def __init__(self, roll_no, name):
+        self.roll_no = roll_no
+        self.name = name
+
+class AttendanceSystem:
+    def __init__(self):
+        self.students = {}
+        self.attendance = {}
+
+    def add_student(self):
+        roll = input("Enter Roll Number: ")
+        name = input("Enter Student Name: ")
+
+        if roll in self.students:
+            print("Student already exists!\n")
+            return
+
+        self.students[roll] = Student(roll, name)
+        print("Student added successfully!\n")
+
+    def view_students(self):
+        if not self.students:
+            print("No students found.\n")
+            return
+
+        print("\nRoll No | Name")
+        print("-" * 20)
+        for s in self.students.values():
+            print(f"{s.roll_no} | {s.name}")
+        print()
+
+    def mark_attendance(self):
+        if not self.students:
+            print("No students available. Add students first.\n")
+            return
+
+        date = datetime.now().strftime("%d-%m-%Y")
+        self.attendance[date] = {}
+
+        print(f"\nMarking attendance for {date}")
+        for roll, student in self.students.items():
+            while True:
+                status = input(f"{student.name} (P/A): ").upper()
+                if status in ("P", "A"):
+                    self.attendance[date][roll] = status
+                    break
+                else:
+                    print("Enter only P or A")
+
+        print("Attendance marked successfully!\n")
+
+    def view_attendance(self):
+        if not self.attendance:
+            print("No attendance records found.\n")
+            return
+
+        for date, records in self.attendance.items():
+            print(f"\nDate: {date}")
+            print("Roll No | Name | Status")
+            print("-" * 30)
+            for roll, status in records.items():
+                name = self.students[roll].name
+                print(f"{roll} | {name} | {status}")
+        print()
+
+    def menu(self):
+        while True:
+            print("===== Attendance Management System =====")
+            print("1. Add Student")
+            print("2. View Students")
+            print("3. Mark Attendance")
+            print("4. View Attendance")
+            print("5. Exit")
+
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                self.add_student()
+            elif choice == "2":
+                self.view_students()
+            elif choice == "3":
+                self.mark_attendance()
+            elif choice == "4":
+                self.view_attendance()
+            elif choice == "5":
+                print("Exiting system.")
+                break
+            else:
+                print("Invalid choice. Try again.\n")
+
+system = AttendanceSystem()
+system.menu()
